@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📊 ggplot2 · how to use</title>
+  <!-- Google Font & simple style -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&family=JetBrains+Mono&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: #f5f7fb;
+      color: #1e293b;
+      padding: 2rem 1.5rem;
+      line-height: 1.55;
+    }
+
+    .app {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 2.5rem;
+      box-shadow: 0 25px 40px -12px rgba(0, 20, 30, 0.25);
+      padding: 2.5rem 2.5rem 3rem;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(4px);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      border-bottom: 4px solid #2c5f8a;
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.75rem;
+      color: #0b2b44;
+    }
+
+    h1 span {
+      background: #2c5f8a;
+      color: white;
+      font-size: 1.8rem;
+      padding: 0.2rem 1rem;
+      border-radius: 60px;
+      line-height: 1.4;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      margin: 2rem 0 1rem;
+      color: #1e4b6e;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    h2::before {
+      content: "◆";
+      color: #4a7da8;
+      font-size: 1.4rem;
+      font-weight: 400;
+    }
+
+    h3 {
+      font-size: 1.3rem;
+      font-weight: 500;
+      margin: 1.5rem 0 0.8rem;
+      color: #1f3e5a;
+    }
+
+    p, li {
+      font-size: 1.05rem;
+      color: #253d4e;
+    }
+
+    .intro {
+      background: #e7f0f9;
+      padding: 1.8rem 2rem;
+      border-radius: 2rem;
+      margin-bottom: 1.8rem;
+      border-left: 8px solid #2c5f8a;
+      font-size: 1.1rem;
+    }
+
+    .intro p {
+      margin-bottom: 0.5rem;
+    }
+
+    code, .code-block {
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 0.2rem 0.5rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .code-block {
+      display: block;
+      white-space: pre-wrap;
+      word-break: break-word;
+      padding: 1.2rem 1.5rem;
+      border-radius: 1.2rem;
+      margin: 1rem 0 1.5rem;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      border: 1px solid #1e2a44;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+    }
+
+    .code-block .comment {
+      color: #94a3b8;
+      font-style: italic;
+    }
+
+    .code-block .fun {
+      color: #7dd3fc;
+    }
+
+    .code-block .arg {
+      color: #fde68a;
+    }
+
+    .code-block .str {
+      color: #a5d6ff;
+    }
+
+    .layer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.2rem;
+      margin: 1.5rem 0 2rem;
+    }
+
+    .layer-card {
+      background: #f8fafc;
+      border-radius: 1.5rem;
+      padding: 1.3rem 1.3rem 1.1rem;
+      border: 1px solid #dbe5ef;
+      transition: 0.15s ease;
+    }
+
+    .layer-card:hover {
+      background: #ffffff;
+      border-color: #aac2da;
+      box-shadow: 0 8px 18px -8px rgba(44, 95, 138, 0.2);
+    }
+
+    .layer-card .layer-icon {
+      font-size: 1.8rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .layer-card h4 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #1e4b6e;
+      margin-bottom: 0.4rem;
+    }
+
+    .layer-card p {
+      font-size: 0.95rem;
+      color: #2f4b62;
+    }
+
+    .bullet-list {
+      list-style: none;
+      margin: 1rem 0;
+    }
+
+    .bullet-list li {
+      padding-left: 1.8rem;
+      position: relative;
+      margin-bottom: 0.7rem;
+    }
+
+    .bullet-list li::before {
+      content: "▹";
+      color: #2c5f8a;
+      font-weight: 700;
+      position: absolute;
+      left: 0.2rem;
+      font-size: 1.3rem;
+    }
+
+    .example-box {
+      background: #f1f6fc;
+      border-radius: 1.8rem;
+      padding: 1.8rem 2rem;
+      margin: 2rem 0 1rem;
+      border: 1px solid #cddef0;
+    }
+
+    .example-box h3 {
+      margin-top: 0;
+      display: flex;
+      gap: 0.6rem;
+      align-items: center;
+      color: #0b2b44;
+      font-weight: 600;
+    }
+
+    .pill {
+      background: #2c5f8a;
+      color: white;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.25rem 0.9rem;
+      border-radius: 40px;
+      letter-spacing: 0.01em;
+    }
+
+    .note {
+      background: #fff9e6;
+      border-left: 6px solid #eab308;
+      padding: 1rem 1.5rem;
+      border-radius: 1rem;
+      margin: 1.5rem 0;
+      font-size: 0.98rem;
+    }
+
+    hr {
+      margin: 2rem 0 0.5rem;
+      border: none;
+      border-top: 2px dashed #cbd5e1;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2.5rem;
+      color: #62748a;
+      font-size: 0.95rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>
+      <span>📦</span> ggplot2 · a gentle guide
+    </h1>
+
+    <div class="intro">
+      <p><strong>ggplot2</strong> is R’s beloved data‑visualisation package, built on the <em>grammar of graphics</em>. 
+      Instead of memorising dozens of chart types, you build plots layer by layer — data, aesthetics, geometries, scales, and facets.</p>
+      <p style="margin-top: 0.7rem;">✨ This page walks through the essential components with clear syntax and examples.</p>
+    </div>
+
+    <!-- core syntax -->
+    <h2>1. The core syntax</h2>
+    <p>Every ggplot2 plot starts with the <code>ggplot()</code> function. You supply a data frame and map variables to visual properties (aesthetics). Then you add layers with <code>+</code>.</p>
+    <div class="code-block">
+<span class="comment"># basic template</span>
+<span class="fun">ggplot</span>(data = <span class="arg">your_data</span>, 
+       <span class="fun">aes</span>(x = <span class="arg">variable1</span>, y = <span class="arg">variable2</span>, color = <span class="arg">group</span>)) <span class="fun">+</span>
+  <span class="fun">geom_point</span>() <span class="fun">+</span>          <span class="comment"># layer: scatterplot</span>
+  <span class="fun">labs</span>(title = <span class="str">"My first plot"</span>) <span class="fun">+</span>
+  <span class="fun">theme_minimal</span>()
+    </div>
+
+    <!-- layers explained -->
+    <h2>2. Layers: the building blocks</h2>
+    <div class="layer-grid">
+      <div class="layer-card">
+        <div class="layer-icon">📊</div>
+        <h4>ggplot() + aes()</h4>
+        <p>Set global data & mapping. <code>aes()</code> maps columns to x, y, colour, size, etc.</p>
+      </div>
+      <div class="layer-card">
+        <div class="layer-icon">📈</div>
+        <h4>geom_*()</h4>
+        <p>Geometric objects: points, bars, lines, boxes… Each adds a visual layer.</p>
+      </div>
+      <div class="layer-card">
+        <div class="layer-icon">🎨</div>
+        <h4>scale_*()</h4>
+        <p>Control axes, colours, sizes. e.g. <code>scale_color_brewer()</code>.</p>
+      </div>
+      <div class="layer-card">
+        <div class="layer-icon">🧩</div>
+        <h4>facet_*()</h4>
+        <p>Small multiples: split plot by a categorical variable.</p>
+      </div>
+    </div>
+
+    <h3>📌 Most used geoms</h3>
+    <ul class="bullet-list">
+      <li><code>geom_point()</code> – scatter plots</li>
+      <li><code>geom_bar()</code> / <code>geom_col()</code> – bar charts</li>
+      <li><code>geom_line()</code> – line plots (time series)</li>
+      <li><code>geom_boxplot()</code> – box‑and‑whisker</li>
+      <li><code>geom_histogram()</code> – distribution</li>
+      <li><code>geom_smooth()</code> – trend lines</li>
+    </ul>
+
+    <!-- full example 1: scatter -->
+    <h2>3. Hands‑on example: scatter plot</h2>
+    <div class="example-box">
+      <h3>🚗 mtcars: weight vs. miles per gallon <span class="pill">geom_point</span></h3>
+      <div class="code-block">
+<span class="comment"># load library</span>
+<span class="fun">library</span>(ggplot2)
+
+<span class="comment"># basic scatter: wt vs mpg, color by cylinders</span>
+<span class="fun">ggplot</span>(data = <span class="arg">mtcars</span>, 
+       <span class="fun">aes</span>(x = <span class="arg">wt</span>, y = <span class="arg">mpg</span>, color = <span class="arg">factor</span>(cyl))) <span class="fun">+</span>
+  <span class="fun">geom_point</span>(size = <span class="arg">3</span>, alpha = <span class="arg">0.8</span>) <span class="fun">+</span>
+  <span class="fun">labs</span>(title = <span class="str">"Fuel efficiency vs weight"</span>,
+       x = <span class="str">"Weight (1000 lbs)"</span>, 
+       y = <span class="str">"Miles per gallon"</span>,
+       color = <span class="str">"Cylinders"</span>) <span class="fun">+</span>
+  <span class="fun">theme_minimal</span>()
+      </div>
+      <p style="margin-top: 0.5rem;">💡 <em>aes(color = factor(cyl))</em> turns a numeric column into discrete categories. Try <code>size = hp</code> to map a continuous variable to point size.</p>
+    </div>
+
+    <!-- example 2: bar plot -->
+    <h2>4. Another layer: bar chart</h2>
+    <div class="example-box">
+      <h3>📊 Count by category <span class="pill">geom_bar</span></h3>
+      <div class="code-block">
+<span class="comment"># using built-in diamonds data (first 500 rows for speed)</span>
+<span class="fun">ggplot</span>(data = <span class="arg">head</span>(diamonds, <span class="arg">500</span>), 
+       <span class="fun">aes</span>(x = <span class="arg">cut</span>, fill = <span class="arg">cut</span>)) <span class="fun">+</span>
+  <span class="fun">geom_bar</span>(alpha = <span class="arg">0.8</span>) <span class="fun">+</span>
+  <span class="fun">labs</span>(title = <span class="str">"Diamond cut distribution"</span>,
+       x = <span class="str">"Cut quality"</span>, y = <span class="str">"Count"</span>) <span class="fun">+</span>
+  <span class="fun">theme_classic</span>() <span class="fun">+</span>
+  <span class="fun">theme</span>(legend.position = <span class="str">"none"</span>)   <span class="comment"># remove legend if redundant</span>
+      </div>
+      <p><code>geom_bar()</code> automatically counts rows. Use <code>geom_col()</code> when you already have a summary statistic.</p>
+    </div>
+
+    <!-- faceting -->
+    <h2>5. Faceting: small multiples</h2>
+    <p>Split your plot by a categorical variable with <code>facet_wrap()</code> or <code>facet_grid()</code>.</p>
+    <div class="code-block">
+<span class="comment"># scatter plot split by transmission type (am)</span>
+<span class="fun">ggplot</span>(<span class="arg">mtcars</span>, <span class="fun">aes</span>(x = <span class="arg">wt</span>, y = <span class="arg">mpg</span>, color = <span class="arg">factor</span>(cyl))) <span class="fun">+</span>
+  <span class="fun">geom_point</span>(size = <span class="arg">2.5</span>) <span class="fun">+</span>
+  <span class="fun">facet_wrap</span>(~ <span class="arg">am</span>, labeller = <span class="arg">label_both</span>) <span class="fun">+</span>   <span class="comment"># 0 = automatic, 1 = manual</span>
+  <span class="fun">labs</span>(title = <span class="str">"MPG vs weight by transmission"</span>, color = <span class="str">"Cyl"</span>)
+    </div>
+    <p>Use <code>facet_grid(rows ~ cols)</code> for a 2D grid of panels.</p>
+
+    <!-- scales and themes -->
+    <h2>6. Scales & themes (the polish)</h2>
+    <ul class="bullet-list">
+      <li><strong>Scales:</strong> <code>scale_color_manual()</code>, <code>scale_fill_gradient()</code>, <code>scale_x_log10()</code> …</li>
+      <li><strong>Themes:</strong> <code>theme_minimal()</code>, <code>theme_bw()</code>, <code>theme_classic()</code>, <code>theme_light()</code>.</li>
+      <li><strong>Labels:</strong> <code>labs(title =, subtitle =, caption =, x =, y =)</code>.</li>
+    </ul>
+    <div class="code-block">
+<span class="comment"># customizing color scale & using a clean theme</span>
+<span class="fun">ggplot</span>(<span class="arg">mtcars</span>, <span class="fun">aes</span>(x = <span class="arg">wt</span>, y = <span class="arg">mpg</span>, color = <span class="arg">hp</span>)) <span class="fun">+</span>
+  <span class="fun">geom_point</span>(size = <span class="arg">3</span>) <span class="fun">+</span>
+  <span class="fun">scale_color_gradient</span>(low = <span class="str">"#2c5f8a"</span>, high = <span class="str">"#e07a5f"</span>) <span class="fun">+</span>
+  <span class="fun">labs</span>(title = <span class="str">"Horsepower vs weight"</span>, color = <span class="str">"HP"</span>) <span class="fun">+</span>
+  <span class="fun">theme_minimal</span>(base_size = <span class="arg">14</span>)
+    </div>
+
+    <!-- workflow summary -->
+    <h2>7. Quick workflow</h2>
+    <div style="background: #e7f0f9; border-radius: 1.5rem; padding: 1.5rem 2rem;">
+      <ol style="margin-left: 1.2rem; font-size: 1.05rem; line-height: 1.8;">
+        <li><code>ggplot(data, aes(...))</code> – set the canvas.</li>
+        <li>Add one or more <code>geom_*()</code> layers.</li>
+        <li>Fine‑tune with <code>scale_*()</code>, <code>labs()</code>, <code>facet_*()</code>.</li>
+        <li>Pick a <code>theme_*()</code> and adjust fonts / colors.</li>
+        <li>Save with <code>ggsave("plot.png", width = 8, height = 5)</code>.</li>
+      </ol>
+    </div>
+
+    <!-- pro tips -->
+    <h2>8. Pro tips</h2>
+    <div class="note">
+      <p>⭐ <strong>Mapping vs setting:</strong> inside <code>aes()</code> you map a variable (e.g. <code>color = cyl</code>); outside you set a constant (e.g. <code>color = "blue"</code>).</p>
+      <p>⭐ <strong>Global vs local:</strong> <code>ggplot(data, aes(...)) + geom_point() + geom_line()</code> — both layers inherit the mapping. You can override inside a layer.</p>
+      <p>⭐ <strong>Pipe friendly:</strong> ggplot2 works beautifully with the native R pipe <code>|></code> or <code>%>%</code>.</p>
+    </div>
+
+    <hr />
+    <footer>
+      <p>📚 ggplot2 — part of the tidyverse. Built for exploration, designed for layers.</p>
+      <p style="margin-top: 0.5rem; font-size: 0.9rem;">This interactive guide is a static reference — run the code in RStudio to see the plots live.</p>
+    </footer>
+  </div>
+</body>
+</html>
